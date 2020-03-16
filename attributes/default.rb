@@ -13,7 +13,7 @@ default["torchvision"]["version"]                = "0.5.0"
 
 #Beam/TFX
 default['pyspark']['version']                    = "2.4.3"
-default['tfx']['version']                        = "0.14.0"
+default['tfx']['version']                        = "0.21.2"
 
 #Avro
 default["avro-python3"]["version"]               = "1.9.2.1"

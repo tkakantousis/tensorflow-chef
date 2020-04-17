@@ -11,9 +11,6 @@ default["pytorch"]["version"]                    = "1.4.0"
 default["pytorch"]["python3"]["build"]           = "py3.6_cuda10.0.130_cudnn7.6.3_0"
 default["torchvision"]["version"]                = "0.5.0"
 
-#Beam/TFX
-default['pyspark']['version']                    = "2.4.3"
-default['tfx']['version']                        = "0.14.0"
 
 #Avro
 default["avro-python3"]["version"]               = "1.9.2.1"

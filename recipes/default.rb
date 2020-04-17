@@ -189,13 +189,6 @@ for python in python_versions
     yes | ${CONDA_DIR}/envs/${ENV}/bin/pip install nvidia-ml-py3==#{node['conda']['nvidia-ml-py']['version']}
     yes | ${CONDA_DIR}/envs/${ENV}/bin/pip install avro-python3==#{node['avro-python3']['version']}
 
-    # Install hops-apache-beam and tfx
-    yes | ${CONDA_DIR}/envs/${ENV}/bin/pip install tfx==#{node['tfx']['version']}
-    #uninstall apache-beam as it is brought by tfx and then install hops-apache-beam later
-    yes | ${CONDA_DIR}/envs/${ENV}/bin/pip uninstall apache-beam
-    #yes | ${CONDA_DIR}/envs/${ENV}/bin/pip install pyspark==#{node['pyspark']['version']}
-    yes | ${CONDA_DIR}/envs/${ENV}/bin/pip install hops-apache-beam==#{node['conda']['beam']['python']['version']}
-
     yes | ${CONDA_DIR}/envs/${ENV}/bin/pip install --no-cache-dir --upgrade witwidget
     yes | ${CONDA_DIR}/envs/${ENV}/bin/pip uninstall tensorflow
     yes | ${CONDA_DIR}/envs/${ENV}/bin/pip uninstall tensorboard
@@ -343,32 +336,6 @@ for python in python_versions
       ${CONDA_DIR}/envs/${ENV}/bin/jupyter serverextension enable --sys-prefix --py jupyterlab_git
     EOF
    end
-  end
-  
-  bash "tfx_tfma_jupyter_extension" do
-    user node['conda']['user']
-    group node['conda']['group']
-    umask "022"
-    retries 1
-    environment ({'HOME' => ::Dir.home(node['conda']['user']),
-                  'USER' => node['conda']['user'],
-                  'CONDA_DIR' => node['conda']['base_dir'],
-                  'HADOOP_HOME' => node['hops']['base_dir'],
-                  #'PATH' => PATH:node['hops']['base_dir']
-                  'ENV' => envName})
-
-    code <<-EOF
-      set -e
-      # Tensorflow-ROCm is currently problematic with Tfx TFMA
-      if [ ! -f /opt/rocm/bin/rocminfo ] && [ #{node['rocm']['install']} != "true" ];
-      then
-            export PATH=$PATH:$HADOOP_HOME/bin
-
-            #Install TensorFlow Extended Model Analysis extension
-            ${CONDA_DIR}/envs/${ENV}/bin/jupyter nbextension install --py --sys-prefix --symlink tensorflow_model_analysis
-            ${CONDA_DIR}/envs/${ENV}/bin/jupyter nbextension enable --py --sys-prefix tensorflow_model_analysis
-      fi
-    EOF
   end
 
   if node['conda']['additional_libs'].empty? == false
